@@ -38,15 +38,29 @@
                 :awhen
                 :it)
   (:export :<search>
+           :<simple-search>
            :new-search
+           :simple-search
            :sort-by))
 
 (in-package :eclastic.search)
 
-(defclass <search> ()
+(defclass <simple-search> ()
   ((query :initarg :query
-          :reader query)
-   (timeout :initarg :timeout
+          :reader query)))
+
+(defmethod get-query-params ((this <simple-search>))
+  '())
+
+(defmethod encode-slots progn ((this <simple-search>))
+  (with-object-element* ("query" (query this))
+    (encode-object (query this))))
+
+(defun simple-search (query)
+  (make-instance '<simple-search> :query query))
+
+(defclass <search> (<simple-search>)
+  ((timeout :initarg :timeout
             :reader timeout)
    (from :initarg :from
          :reader from)
@@ -102,6 +116,7 @@
                                (:sum "sum")
                                (:avg "avg"))))
       field))
+
 
 (defmethod encode-slots progn ((this <search>))
   (with-object-element* ("query" (query this))
@@ -170,7 +185,7 @@
 
 ;; CRUD methods
 
-(defmethod get* ((place <server>) (query <search>))
+(defmethod get* ((place <server>) (query <simple-search>))
   (let* ((result
           (send-request (format nil "~A/_search"
                                 (get-uri place))
@@ -187,7 +202,7 @@
                   :timed-out (gethash "timed_out" result)
                   :took (gethash "took" result)))))
 
-(defmethod delete* ((place <type>) (query <search>))
+(defmethod delete* ((place <type>) (query <simple-search>))
   (let ((result (send-request (format nil "~A/_query"
                                       (get-uri place))
                               :delete

@@ -27,12 +27,14 @@
                 :encode-object
                 :encode-object-element
                 :with-array
+                :encode-array-element
                 :encode-array-elements
                 :with-object
                 :with-object-element
                 :with-output-to-string*
                 :*json-output*)
   (:export :<match>
+           :<multi-match>
            :<bool>
            :<boosting>
            :<filtered>
@@ -47,6 +49,7 @@
            :<wildcard>
            :<geo-bounding-box>
            :match
+           :multi-match
            :bool
            :boosting
            :filtered
@@ -170,6 +173,30 @@
                                        (:all "all")))
                  :cutoff-frequency cutoff-frequency
                  :boost boost))
+
+(defclass <multi-match> (<string-query>)
+  ((type :initarg :type
+         :reader <multi-match>-type)
+   (fields :initarg :fields
+           :reader fields)))
+
+(defmethod encode-slots progn ((this <multi-match>))
+  (with-object-element ("multi_match")
+    (with-object ()
+      (encode-object-element "query" (query-string this))
+      (with-object-element ("fields")
+        (with-array ()
+          (dolist (field (fields this))
+            (yason:encode-array-element field))))
+      (encode-object-element "type" (<multi-match>-type this)))))
+
+(defun multi-match (query-string fields &key type)
+  "Creates a multi-match query with QUERY-STRING querying on FIELDS with match
+   type TYPE (default most_fields)."
+  (make-instance '<multi-match>
+                 :query-string query-string
+                 :fields fields
+                 :type (or type "most_fields")))
 
 (defclass <bool> (<boost-query> <filter> <minimum-should-match-query>)
   ((must :initarg :must

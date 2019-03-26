@@ -22,25 +22,32 @@
   (:documentation
    "Import and re-export the symbols that make up the public interface
    of Eclastic.")
-  (:use :eclastic.generic
-        :eclastic.server
+  (:use :eclastic.bulk
         :eclastic.document
+        :eclastic.generic
+        :eclastic.index
+        :eclastic.query
         :eclastic.search
-        :eclastic.script
-        :eclastic.bulk)
+        :eclastic.settings
+        :eclastic.server
+        :eclastic.script)
+           ;;generic
   (:export :get*
            :index
            :create
            :update
            :delete*
 
+           ;;server
            :<server>
            :host
            :port
+           :<index>
            :index-name
            :<type>
            :type-name
 
+           ;;document
            :<document>
            :document-id
            :document-source
@@ -51,12 +58,41 @@
            :document-with-id
            :document-by-id
 
+           ;;search
+           :<simple-search>
+           :simple-search
            :<search>
            :new-search
            :sort-by
 
+           ;;script
            :<script>
            :define-script
            :encode-script
 
-           :with-bulk-documents))
+           ;;bulk
+           :with-bulk-documents
+
+           ;;index
+           :<index-settings>
+           :create-index-settings
+
+           ;;query
+           :<match>
+           :match
+           :<multi-match>
+           :multi-match
+
+           ;;settings
+           :<field>
+           :create-field
+           :<mappings>
+           :create-mappings
+           :<ngram-tokenizer>
+           :create-ngram-tokenizer
+           :<property>
+           :create-property
+           :<settings>
+           :create-settings
+           :<standard-tokenizer>
+           :create-standard-tokenizer))

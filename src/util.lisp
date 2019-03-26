@@ -85,6 +85,12 @@
   (with-output-to-string (s)
     (funcall (formatter "~{~A~^,~}") s list)))
 
+(defun print-hashtable (ht stream)
+  (format stream "#HASH{~{~{(~a : ~a)~}~^ ~}}"
+          (loop for key being the hash-keys of ht
+                using (hash-value value)
+                collect (list key value))))
+
 (defun send-request (uri method &key data parameters)
   (let ((*text-content-types*
           '(("application" . "json"))))
@@ -100,7 +106,11 @@
       (declare (ignore headers uri stream reason))
       (unwind-protect
            (if (= status 400)
-               (error (gethash "error" (parse body)))
+               (let ((error-message (gethash "error" (parse body))))
+                 (error (cond
+                          ((equal (type-of error-message) 'hash-table)
+                           (print-hashtable error-message nil))
+                          (T error-message))))
                (values (parse body) status))
         (when closep
           (close body))))))

@@ -78,6 +78,7 @@
              (type-name obj)
              (document-id obj))))
 
+
 (defun hash-to-document (hash-table &key host port)
   (make-instance '<document>
                  :index (gethash "_index" hash-table)

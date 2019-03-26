@@ -41,4 +41,6 @@
              (:file "document")
              (:file "search")
              (:file "bulk")
+             (:file "settings")
+             (:file "index")
              (:file "main")))))
