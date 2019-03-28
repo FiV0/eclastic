@@ -59,3 +59,10 @@
                         :data (with-output-to-string* ()
                                 (encode-object settings)))))
     result))
+
+(defmethod delete* ((place <server>) (settings <index-settings>))
+  (let* ((result
+          (send-request (format nil "~A"
+                                (get-uri place))
+                        :delete)))
+    result))
