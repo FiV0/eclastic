@@ -82,6 +82,8 @@
            :match
            :<multi-match>
            :multi-match
+           :<highlight>
+           :highlight
 
            ;;settings
            :<field>

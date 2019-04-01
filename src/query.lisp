@@ -45,6 +45,7 @@
            :<geo-shape>
            :<has-child>
            :<has-parent>
+           :<highlight>
            :<prefix>
            :<wildcard>
            :<geo-bounding-box>
@@ -60,6 +61,7 @@
            :geo-envelope
            :has-child
            :has-parent
+           :highlight
            :prefix
            :wildcard
            :geo-bounding-box))
@@ -197,6 +199,27 @@
                  :query-string query-string
                  :fields fields
                  :type (or type "most_fields")))
+
+(defclass <highlight> ()
+  ((fields :initarg :fields
+           :accessor <highlight>-fields)
+   (types :initarg :types
+          :accessor <highlight>-types
+          :documentation "The type of highlighters for the fields. Possible
+                          values are 'unified', 'plain' and 'fvh'")))
+
+(defmethod encode-slots progn ((this <highlight>))
+  (with-object-element ("fields")
+    (with-object ()
+     (loop for field in (<highlight>-fields this)
+           for type in (<highlight>-types this)
+           do (with-object-element (field)
+                (with-object ()
+                 (encode-object-element "type" type)))))))
+
+(defun highlight (fields types)
+  "Creates a highlight object with FIELDS highlighted by TYPES."
+  (make-instance '<highlight> :fields fields :types types))
 
 (defclass <bool> (<boost-query> <filter> <minimum-should-match-query>)
   ((must :initarg :must

@@ -69,7 +69,10 @@
            :initform nil
            :reader parent-of)
    (fields :initarg :fields
-           :initform nil)))
+           :initform nil)
+   (highlight :initarg :highlight
+              :initform nil
+              :accessor document-highlight)))
 
 (defmethod print-object ((obj <document>) stream)
    (print-unreadable-object (obj stream :type t :identity t)
@@ -88,6 +91,7 @@
                  :source (gethash "_source" hash-table)
                  :routing (gethash "_routing" hash-table)
                  :parent (gethash "_parent" hash-table)
+                 :highlight (gethash "highlight" hash-table)
                  :host host
                  :port port))
 
