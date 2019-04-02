@@ -51,6 +51,7 @@
            :<document>
            :document-id
            :document-source
+           :document-highlight
            :version
            :routing
            :parent-of

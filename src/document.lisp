@@ -36,6 +36,7 @@
   (:export :<document>
            :document-id
            :document-source
+           :document-highlight
            :version
            :version-conflict
            :document-exists
