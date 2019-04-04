@@ -49,19 +49,29 @@
   ((query :initarg :query
           :reader query)
    (highlight :initarg :highlight
-              :reader highlight)))
+              :reader highlight)
+   (size :initarg :size
+         :reader size)
+   (from :initarg :from
+         :reader from)))
 
 (defmethod get-query-params ((this <simple-search>))
   '())
 
 (defmethod encode-slots progn ((this <simple-search>))
+  (encode-object-element* "from" (from this))
+  (encode-object-element* "size" (size this))
   (with-object-element* ("query" (query this))
     (encode-object (query this)))
   (with-object-element* ("highlight" (highlight this))
     (encode-object (highlight this))))
 
-(defun simple-search (query &optional highlight)
-  (make-instance '<simple-search> :query query :highlight highlight))
+(defun simple-search (query &optional highlight &key (from 0) (size 10))
+  (make-instance '<simple-search>
+                 :query query
+                 :highlight highlight
+                 :from from
+                 :size size))
 
 (defclass <search> (<simple-search>)
   ((timeout :initarg :timeout
@@ -199,7 +209,6 @@
                         :parameters (get-query-params query)))
          (hits (gethash "hits" result))
          (shards (gethash "_shards" result)))
-    (print hits)
     (values (mapcar #'hash-to-document (gethash "hits" hits))
             (gethash "aggregations" result)
             (list :hits (gethash "total" hits)
