@@ -143,8 +143,12 @@
 (defmethod encode-slots progn ((this <property>))
   (encode-object-element "type" (:<propterty>-type this))
   (with-object-element ("fields")
-    (dolist (field (:<property>-fields this))
-      (encode-object field))))
+    (let ((fields (:<property>-fields this)))
+      ;; TODO check if there is a more idiomatic way to do this
+      (if fields
+          (dolist (field (:<property>-fields this))
+            (encode-object field))
+          (with-object ())))))
 
 (defun create-property (name type fields)
   (make-instance '<property>
