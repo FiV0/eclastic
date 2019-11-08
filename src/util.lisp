@@ -86,6 +86,7 @@
     (funcall (formatter "~{~A~^,~}") s list)))
 
 (defun print-hashtable (ht stream)
+  "Prints HT to STREAM in a more human readable form."
   (format stream "#HASH{~{~{(~a : ~a)~}~^ ~}}"
           (loop for key being the hash-keys of ht
                 using (hash-value value)

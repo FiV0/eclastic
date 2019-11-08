@@ -31,7 +31,7 @@
                 :with-object-element
                 :with-output-to-string*
                 :*json-output*)
-  (:export :<term>)))
+  (:export :<term>))
 
 (in-package :eclastic.suggest)
 

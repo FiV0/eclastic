@@ -20,14 +20,16 @@
 
 (defpackage :eclastic.server
   (:use :cl
-        :eclastic.generic)
+        :eclastic.generic
+        :eclastic.util)
   (:export :<server>
            :host
            :port
            :<index>
            :index-name
            :<type>
-           :type-name))
+           :type-name
+           :get-version))
 
 (in-package :eclastic.server)
 
@@ -64,3 +66,8 @@
                (call-next-method)
                (type-name this)))
 
+(defun get-version ()
+  (let ((server (make-instance '<server>)))
+    (nth-value 0 (gethash "number"
+                          (gethash "version"
+                                   (send-request (get-uri server) :get))))))

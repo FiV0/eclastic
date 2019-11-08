@@ -46,6 +46,7 @@
            :index-name
            :<type>
            :type-name
+           :get-version
 
            ;;document
            :<document>
